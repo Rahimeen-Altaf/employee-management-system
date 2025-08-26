@@ -20,8 +20,6 @@ import {
 } from '@mui/material';
 import {
   Person as PersonIcon,
-  Email as EmailIcon,
-  Phone as PhoneIcon,
   Business as BusinessIcon,
   Work as WorkIcon,
   AttachMoney as MoneyIcon,
@@ -51,6 +49,8 @@ const EmployeeForm = () => {
 
   const [availableUsers, setAvailableUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [userError, setUserError] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,12 +71,17 @@ const EmployeeForm = () => {
 
   const fetchAvailableUsers = async () => {
     try {
+      setLoadingUsers(true);
+      setUserError('');
       const response = await axios.get('http://localhost:3000/api/employees/users-without-employee-records', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setAvailableUsers(response.data.data.users);
+      setAvailableUsers(response.data.data.users || []);
     } catch (error) {
       console.error('Error fetching available users:', error);
+      setUserError('Failed to load available users. Please try again.');
+    } finally {
+      setLoadingUsers(false);
     }
   };
 
@@ -165,14 +170,35 @@ const EmployeeForm = () => {
                     value={formData.userId}
                     label="Select User"
                     onChange={handleChange}
+                    disabled={loadingUsers}
                   >
-                    {availableUsers.map((user) => (
-                      <MenuItem key={user.id} value={user.id}>
-                        {user.firstName} {user.lastName} ({user.email})
+                    {loadingUsers ? (
+                      <MenuItem disabled>
+                        Loading users...
                       </MenuItem>
-                    ))}
+                    ) : availableUsers.length === 0 ? (
+                      <MenuItem disabled>
+                        No users available (all users already have employee profiles)
+                      </MenuItem>
+                    ) : (
+                      availableUsers.map((user) => (
+                        <MenuItem key={user.id} value={user.id}>
+                          {user.firstName} {user.lastName} ({user.email})
+                        </MenuItem>
+                      ))
+                    )}
                   </Select>
                 </FormControl>
+                {userError && (
+                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                    {userError}
+                  </Typography>
+                )}
+                {!loadingUsers && availableUsers.length === 0 && !userError && (
+                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                    All registered users already have employee profiles. New users need to register first.
+                  </Typography>
+                )}
               </Grid>
             )}
 
@@ -185,20 +211,44 @@ const EmployeeForm = () => {
                   </Typography>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
-                      <Typography variant="body2" color="textSecondary">Name:</Typography>
-                      <Typography variant="body1">{selectedUser.firstName} {selectedUser.lastName}</Typography>
+                      <Box>
+                        <Typography variant="body2" color="textSecondary" component="span">
+                          Name:
+                        </Typography>
+                        <Typography variant="body1" component="div">
+                          {selectedUser.firstName} {selectedUser.lastName}
+                        </Typography>
+                      </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body2" color="textSecondary">Email:</Typography>
-                      <Typography variant="body1">{selectedUser.email}</Typography>
+                      <Box>
+                        <Typography variant="body2" color="textSecondary" component="span">
+                          Email:
+                        </Typography>
+                        <Typography variant="body1" component="div">
+                          {selectedUser.email}
+                        </Typography>
+                      </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body2" color="textSecondary">Phone:</Typography>
-                      <Typography variant="body1">{selectedUser.phone}</Typography>
+                      <Box>
+                        <Typography variant="body2" color="textSecondary" component="span">
+                          Phone:
+                        </Typography>
+                        <Typography variant="body1" component="div">
+                          {selectedUser.phone}
+                        </Typography>
+                      </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="body2" color="textSecondary">Role:</Typography>
-                      <Typography variant="body1">{selectedUser.role}</Typography>
+                      <Box>
+                        <Typography variant="body2" color="textSecondary" component="span">
+                          Role:
+                        </Typography>
+                        <Typography variant="body1" component="div">
+                          {selectedUser.role}
+                        </Typography>
+                      </Box>
                     </Grid>
                   </Grid>
                 </Paper>

@@ -200,10 +200,10 @@ const DashboardHome = () => {
                       primary={`${employee?.user?.firstName || 'Unknown'} ${employee?.user?.lastName || 'Employee'}`}
                       secondary={
                         <Box>
-                          <Typography variant="body2" color="textSecondary">
+                          <Typography variant="body2" color="textSecondary" component="div">
                             {employee?.position || 'N/A'} - {employee?.department || 'N/A'}
                           </Typography>
-                          <Typography variant="caption" color="textSecondary">
+                          <Typography variant="caption" color="textSecondary" component="div">
                             Hired: {employee?.hireDate ? formatDate(employee.hireDate) : 'N/A'}
                           </Typography>
                         </Box>
