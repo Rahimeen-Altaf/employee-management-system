@@ -63,7 +63,7 @@ A comprehensive full-stack employee management application built with React and 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/employee-management-system.git
+   git clone https://github.com/Rahimeen-Altaf/employee-management-system.git
    cd employee-management-system
    ```
 
