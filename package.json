@@ -1,0 +1,20 @@
+{
+  "name": "user-management-system",
+  "version": "1.0.0",
+  "description": "A full-stack user management application with React and Node.js",
+  "scripts": {
+    "install:all": "npm install && cd Backend && npm install && cd ../Frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd Backend && npm run dev",
+    "dev:frontend": "cd Frontend && npm run dev",
+    "start:backend": "cd Backend && npm start",
+    "build:frontend": "cd Frontend && npm run build",
+    "build": "npm run build:frontend"
+  },
+  "keywords": ["react", "nodejs", "express", "postgresql", "user-management"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
